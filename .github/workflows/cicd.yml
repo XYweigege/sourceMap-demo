@@ -1,25 +1,25 @@
 name: todoList 自动部署
-on:
-  push:
+on: # 触发条件
+  push: # 当有代码推送到master时候
     branches:
       - master
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+jobs:  # 定义工作
+  deploy: # 工作名称
+    runs-on: ubuntu-latest  #使用最新的ubuntu系统作为运行环境
+    steps:   #定义工作步骤
+      - uses: actions/checkout@v3 #使用官方的checkout动作检出仓库代码
+      - uses: pnpm/action-setup@v2 # 使用pnpm包管理器
+        with: #偶配置参数
+          version: 10.9.0 # 指定pnpm版本
+      - uses: actions/setup-node@v3 # 安装Node.js环境
         with:
-          version: 8.6.2
-      - uses: actions/setup-node@v3
+          node-version: 20.13.1 # 指定Node.js版本
+      - run: npm install  # 安装项目依赖
+      - run: npm run build # 构建项目
+      - name: action-Deploy # 步骤名称
+        uses: peaceiris/actions-gh-pages@v3 # 使用第三方部署动作
         with:
-          node-version: 16.X
-      - run: npm install
-      - run: npm run build
-      - name: action-Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.DEPLOY_SECRET }}
-          BRANCH: gh-pages
-          publish_dir: ./dist
+          github_token: ${{ secrets.DEPLOY_SECRET }}  # 使用GitHub token进行认证
+          BRANCH: gh-pages  #部署到gh-pages分支
+          publish_dir: ./dist  # 指定构建输出目录
  
